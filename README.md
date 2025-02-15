@@ -32,7 +32,7 @@ Required content models in Contentful:
 - Features (Rich Text)
 - Featured (Boolean)
 
-#### Contact Information  
+#### Contact Information
 
 - Business Name (Short Text)
 - Email (Short Text)

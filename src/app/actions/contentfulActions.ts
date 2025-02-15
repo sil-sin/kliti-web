@@ -7,3 +7,10 @@ export const fetchEntries = async () => {
   console.log(`Error getting entries.`)
   return []
 }
+
+export const fetchEntry = async (id: string) => {
+  const entry = await contentfulClient.getEntry(id)
+  if (entry) return entry
+  console.log(`Error getting entry.`)
+  return {}
+}
