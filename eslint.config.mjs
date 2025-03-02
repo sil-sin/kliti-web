@@ -1,16 +1,43 @@
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
-import { FlatCompat } from '@eslint/eslintrc'
+import js from '@eslint/js'
+import importPlugin from 'eslint-plugin-import'
+import prettierPlugin from 'eslint-plugin-prettier'
+import reactPlugin from 'eslint-plugin-react'
+import reactHooksPlugin from 'eslint-plugin-react-hooks'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+export default [
+  js.configs.recommended, // Equivalent to "eslint:recommended"
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname
-})
+  {
+    plugins: {
+      import: importPlugin,
+      react: reactPlugin,
+      'react-hooks': reactHooksPlugin,
+      prettier: prettierPlugin
+    },
 
-const eslintConfig = [
-  ...compat.extends('next/core-web-vitals', 'next/typescript')
+    rules: {
+      // 🔹 Import sorting
+      'import/order': [
+        'error',
+        {
+          groups: [
+            ['builtin', 'external'],
+            'internal',
+            ['parent', 'sibling', 'index']
+          ],
+          'newlines-between': 'always',
+          alphabetize: { order: 'asc', caseInsensitive: true }
+        }
+      ],
+
+      // 🔹 React Rules
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+
+      // 🔹 Prettier Integration
+      'prettier/prettier': 'error'
+    },
+
+    ignores: ['node_modules', 'dist'] // Ignore unnecessary folders
+  }
 ]
-
-export default eslintConfig

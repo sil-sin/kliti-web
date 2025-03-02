@@ -1,15 +1,18 @@
-import styles from './page.module.css'
-import { fetchCollections } from './actions/firebaseActions'
-import { fetchEntries } from './actions/contentfulActions'
+'use client'
+import Hero from '@/components/composed/Hero/Hero'
 
-export default async function Home() {
-  const allEntries = await fetchEntries()
-  // console.log(allEntries)
-  const firestoreEntries = await fetchCollections()
+export default function Home() {
+  // const allEntries = await fetchEntries()
+  //
+  // const firestoreEntries = await fetchCollections()
+  // console.log( firestoreEntries)
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>Main Content</main>
-      <footer className={styles.footer}>Footer content</footer>
+    <div className="bg-grey-500">
+      <main>
+        <Hero />
+      </main>
+      <footer className="">Footer content</footer>
     </div>
   )
 }

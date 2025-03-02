@@ -1,8 +1,12 @@
 {
-    "semi": false,
     "singleQuote": true,
+    "semi": false,
     "trailingComma": "none",
-    "tabWidth": 2,
-    "useTabs": false,
-    "formatOnSave": true
+    "printWidth": 80,
+    "overrides": [
+        {
+            "files": "*.ts",
+            "options": { "parser": "typescript" }
+        }
+    ]
 }
