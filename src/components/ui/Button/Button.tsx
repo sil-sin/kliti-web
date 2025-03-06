@@ -25,7 +25,7 @@ const Button: FC<ButtonProps> = ({
   iconPosition = 'left'
 }) => {
   const btnClasses = classNames(
-    'font-medium transition-all duration-300 rounded-full focus:outline-none inline-flex items-center justify-center',
+    'font-medium transition-all duration-300 rounded-full focus:ring-1 focus:ring-offset-2 focus:ring-primary-light inline-flex items-center justify-center text-center',
     {
       // Base variants
       'bg-primary text-secondary-light border border-primary hover:bg-primary-dark active:bg-primary-dark':
@@ -44,9 +44,9 @@ const Button: FC<ButtonProps> = ({
         variant === 'disabled',
 
       // Sizes
-      'text-sm px-4 py-1.5': size === 'sm',
-      'text-base px-6 py-2.5': size === 'md',
-      'text-lg px-8 py-3': size === 'lg',
+      'text-sm px-2 py-1.5': size === 'sm',
+      'text-base px-2 py-2.5': size === 'md',
+      'text-lg px-3 py-2': size === 'lg',
 
       // Width
       'w-full': fullWidth

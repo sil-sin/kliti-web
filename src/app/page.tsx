@@ -1,11 +1,10 @@
 'use client'
-import Hero from '@/components/composed/Hero/Hero'
+import Hero from '@/components/hero/hero'
+import { useAuth } from '@/context/AuthContext'
 
 export default function Home() {
-  // const allEntries = await fetchEntries()
-  //
-  // const firestoreEntries = await fetchCollections()
-  // console.log( firestoreEntries)
+  const { user } = useAuth()
+  console.log(user)
 
   return (
     <div className="bg-grey-500">

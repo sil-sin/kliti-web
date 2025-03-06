@@ -27,16 +27,13 @@
     --font-cormorant: 'Cormorant', serif;
 }
 
+
 body {
     background-color: var(--background);
     color: var(--foreground);
 }
 
-h1, h2, h3, h4, h5, h6, p, .fancy-text {
+h1, h2, h3, h4, h5, h6, .fancy-text {
     font-family: var(--font-cormorant), serif;
 }
-
-/*.bg-hero {*/
-/*    !*background-image: url('/hero_cover.jpg');*!*/
-/*}*/
 
