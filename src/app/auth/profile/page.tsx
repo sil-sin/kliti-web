@@ -15,11 +15,14 @@ export default function Profile() {
 
   const fetchFiles = async () => {
     setLoading(true)
-
     if (!user) return
-
-    const userFiles = await getMegaFiles(user.uid)
-    setMegaFiles(userFiles)
+    try {
+      const userFiles = await getMegaFiles(user.uid)
+      setMegaFiles(userFiles || [])
+    } catch (e) {
+      setMegaFiles([])
+    }
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -28,7 +31,6 @@ export default function Profile() {
       return
     }
     fetchFiles()
-    setLoading(false)
   }, [user, router])
 
   return (
