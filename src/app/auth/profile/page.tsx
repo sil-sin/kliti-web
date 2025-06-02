@@ -12,17 +12,14 @@ export default function Profile() {
 
   const [megaFiles, setMegaFiles] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
-  const hasFetched = useRef(false) // Prevent redundant fetch calls
 
   const fetchFiles = async () => {
     setLoading(true)
 
-    if (hasFetched.current || !user) return
+    if (!user) return
 
     const userFiles = await getMegaFiles(user.uid)
     setMegaFiles(userFiles)
-
-    hasFetched.current = true
   }
 
   useEffect(() => {
