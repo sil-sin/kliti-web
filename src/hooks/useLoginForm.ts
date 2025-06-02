@@ -3,6 +3,7 @@ import { ChangeEvent, FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { z } from 'zod'
+import { useFormErrorHandler } from './useFormErrorHandler'
 
 const loginSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Invalid email format'),
@@ -16,36 +17,17 @@ export function useLoginForm() {
     email: '',
     password: ''
   })
-  const [errors, setErrors] = useState<Partial<LoginFormData>>({})
   const [serverError, setServerError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { login } = useAuth()
-
-  const validateForm = () => {
-    try {
-      loginSchema.parse(formData)
-      setErrors({})
-      return true
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const formattedErrors: Partial<LoginFormData> = {}
-        error.errors.forEach((err) => {
-          if (err.path[0]) {
-            formattedErrors[err.path[0] as keyof LoginFormData] = err.message
-          }
-        })
-        setErrors(formattedErrors)
-      }
-      return false
-    }
-  }
+  const { errors, validateForm } = useFormErrorHandler(loginSchema)
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setServerError(null)
 
-    if (!validateForm()) return
+    if (!validateForm(formData)) return
 
     setLoading(true)
     const result = await login(formData.email, formData.password)

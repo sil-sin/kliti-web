@@ -1,7 +1,9 @@
+// src/hooks/useSignUpForm.ts
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { z } from 'zod'
+import { useFormErrorHandler } from './useFormErrorHandler'
 
 const signUpSchema = z.object({
   fullName: z.string().min(1, 'Full name is required'),
@@ -17,36 +19,17 @@ export function useSignUpForm() {
     email: '',
     password: ''
   })
-  const [errors, setErrors] = useState<Partial<SignUpFormData>>({})
   const [serverError, setServerError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { signup } = useAuth()
-
-  const validateForm = () => {
-    try {
-      signUpSchema.parse(formData)
-      setErrors({})
-      return true
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const formattedErrors: Partial<SignUpFormData> = {}
-        error.errors.forEach((err) => {
-          if (err.path[0]) {
-            formattedErrors[err.path[0] as keyof SignUpFormData] = err.message
-          }
-        })
-        setErrors(formattedErrors)
-      }
-      return false
-    }
-  }
+  const { errors, validateForm } = useFormErrorHandler(signUpSchema)
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setServerError(null)
 
-    if (!validateForm()) return
+    if (!validateForm(formData)) return
 
     setLoading(true)
     const result = await signup(

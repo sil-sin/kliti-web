@@ -22,7 +22,7 @@ export default function LoginForm() {
 
       {serverError && (
         <div className="p-3 bg-red-100 text-red-700 rounded text-center">
-          {serverError}
+          Login failed. Please check your email and password and try again.
         </div>
       )}
 
