@@ -2,16 +2,14 @@ import { downloadMegaFile } from '@/actions/mega'
 import { getWatermarkSVG } from '@/utils/watermarkSvg'
 import { NextRequest, NextResponse } from 'next/server'
 import sharp from 'sharp'
-import { cachedDataVersionTag } from 'v8'
 
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } =await params
+    const { id } = params
 
-    // Validate the id parameter
     if (!id) {
       return NextResponse.json(
         { error: 'Missing id parameter' },
@@ -19,7 +17,6 @@ export async function GET(
       )
     }
 
-    // Use your function to get the image buffer as base64
     const productRes = await downloadMegaFile(id)
     if (!productRes) {
       return NextResponse.json(
@@ -28,15 +25,10 @@ export async function GET(
       )
     }
 
-    // Convert base64 back to a buffer
     const imageBuffer = Buffer.from(productRes.base64, 'base64')
-    const contentType = 'image/jpeg' // or detect from fileName if needed
-
-    // Get image dimensions
     const metadata = await sharp(imageBuffer).metadata()
     const width = metadata.width || 800
     const height = metadata.height || 800
-
     const fontSize = Math.floor(width / 12)
     const watermark = Buffer.from(getWatermarkSVG(width, height, fontSize))
 
@@ -52,8 +44,7 @@ export async function GET(
         Pragma: 'no-cache',
         Expires: '0',
         'Surrogate-Control': 'no-store',
-
-        'Content-Type': contentType,
+        'Content-Type': 'image/jpeg',
         'Content-Disposition': 'inline'
       }
     })
