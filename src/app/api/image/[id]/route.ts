@@ -4,11 +4,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import sharp from 'sharp'
 
 export async function GET(
-  req: NextRequest,
-  { params }: { params: Record<string, string> }
-) {
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params
+    const { id } = await params
 
     if (!id) {
       return NextResponse.json(
