@@ -116,7 +116,7 @@ export async function downloadMegaFile(nodeId: string) {
     const buffer = await targetFile.downloadBuffer();
     const base64 = buffer.toString('base64');
     dnodeId.push(nodeId)
-    console.log(dnodeId, 'dnodeId');
+
     return {
       base64,
       fileName: targetFile.attributes.n,
