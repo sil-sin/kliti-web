@@ -30,7 +30,7 @@ export async function GET(
     const height = metadata.height || 800
     const fontSize = Math.floor(width / 12)
     const watermark = Buffer.from(getWatermarkSVG(width, height, fontSize))
-
+console.log(watermark)
     const outputBuffer = await sharp(imageBuffer)
       .composite([{ input: watermark }])
       .toBuffer()
