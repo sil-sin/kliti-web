@@ -29,7 +29,7 @@ export async function GET(
     const width = metadata.width || 800
     const height = metadata.height || 800
     const fontSize = Math.floor(width / 12)
-    const watermark = Buffer.from(getWatermarkSVG(width, height, fontSize))
+    const watermark = Buffer.from(await getWatermarkSVG(width, height, fontSize))
 
     const outputBuffer = await sharp(imageBuffer)
       .composite([{ input: watermark }])
@@ -38,11 +38,7 @@ export async function GET(
     return new NextResponse(Buffer.from(outputBuffer), {
       status: 200,
       headers: {
-        'Cache-Control':
-          'no-store, no-cache, must-revalidate, proxy-revalidate',
-        Pragma: 'no-cache',
-        Expires: '0',
-        'Surrogate-Control': 'no-store',
+        'Cache-Control': 'public, max-age=172800, stale-while-revalidate=7200',
         'Content-Type': 'image/jpeg',
         'Content-Disposition': 'inline'
       }
