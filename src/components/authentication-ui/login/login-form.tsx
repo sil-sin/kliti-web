@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useRef } from 'react'
 import { useLoginForm } from '@/hooks/useLoginForm'
-import Button from '@/components/ui/Button/Button'
+import Button from '@/components/ui/button'
 
 export default function LoginForm() {
   const { formData, errors, serverError, loading, handleSubmit, handleChange } =

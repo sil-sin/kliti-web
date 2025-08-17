@@ -1,8 +1,8 @@
 export async function getWatermarkSVG(width: number, height: number, fontSize: number) {
-    return `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+  return `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" overflow="visible">
     <text
       x="50%"
-      y="${fontSize + 10}"
+      y="${fontSize + 100}"
       text-anchor="middle"
       dominant-baseline="middle"
       font-size="${fontSize}"

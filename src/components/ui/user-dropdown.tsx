@@ -1,7 +1,7 @@
 import React from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
-import Button from '@/components/ui/Button/Button'
+import Button from '@/components/ui/button'
 
 const UserDropdown = ({ onClick }: { onClick: () => void }) => {
   const { logout } = useAuth()

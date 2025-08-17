@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
-import { getMegaFiles } from '@/actions/mega'
+
 import Image from 'next/image'
+import { getImagesInFolder } from '@/actions/cloudinary-actions'
 
 export default function Profile() {
   const { user, logout } = useAuth()
@@ -18,19 +19,15 @@ export default function Profile() {
     setLoading(true)
     setError(null)
     if (!user) return
-
     try {
-      console.log('Fetching files for user:', user.uid)
-      const userFiles = await getMegaFiles(user.uid)
-      console.log('Files fetched:', userFiles)
-      setMegaFiles(userFiles || [])
+      const res = await getImagesInFolder(user.uid)
+
+      setMegaFiles(res) // Set to state
     } catch (e: any) {
-      console.error('Error fetching files:', e)
       setError(e.message || 'Failed to load files')
       setMegaFiles([])
-    } finally {
-      setLoading(false)
     }
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -39,8 +36,9 @@ export default function Profile() {
       return
     }
     fetchFiles()
-  }, [user, router])
+  }, [user])
 
+  console.log('Mega files:', megaFiles)
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Profile</h1>
@@ -57,19 +55,19 @@ export default function Profile() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {megaFiles && megaFiles.length > 0 ? (
             megaFiles.map((file) => (
-              <div key={file.fileId} className="relative">
+              <div key={file.public_id} className="relative">
                 <Image
-                  src={`/api/image/${file.fileId}`}
-                  alt={file.fileName || 'Image'}
-                  width={200}
-                  height={200}
+                  src={`/api/image/${file.public_id}`}
+                  alt={file.public_id}
+                  width={file.width || 200}
+                  height={file.height || 200}
                   className="object-cover rounded-md"
                   onError={(e) => {
-                    console.error(`Failed to load image: ${file.fileId}`)
+                    console.error(`Failed to load image: ${file.public_id}`)
                     ;(e.target as HTMLImageElement).src = '/placeholder.jpg'
                   }}
                 />
-                <p className="text-sm mt-1 truncate">{file.fileName}</p>
+                <p className="text-sm mt-1 truncate">Photo-{}</p>
               </div>
             ))
           ) : (

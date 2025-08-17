@@ -5,7 +5,7 @@ import LoginForm from '@/components/authentication-ui/login/login-form'
 import SignUpForm from '@/components/authentication-ui/signup/signup-form'
 import { useAuth } from '@/context/AuthContext'
 import { redirect } from 'next/navigation'
-import Button from '@/components/ui/Button/Button'
+import Button from '@/components/ui/button'
 import GoogleButton from '@/components/authentication-ui/google/google-button'
 
 const AuthPage = () => {

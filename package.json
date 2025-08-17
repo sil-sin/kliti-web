@@ -33,6 +33,7 @@
     "@types/node": "^20.17.24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cloudinary": "^2.7.0",
     "eslint": "^9.21.0",
     "eslint-config-next": "15.1.7",
     "eslint-config-prettier": "^10.0.2",

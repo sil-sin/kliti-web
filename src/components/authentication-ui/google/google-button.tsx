@@ -1,5 +1,5 @@
 // src/components/login/google-button.tsx
-import Button from '@/components/ui/Button/Button'
+import Button from '@/components/ui/button'
 import Image from 'next/image'
 
 const GoogleButton = ({ onClick }: { onClick: () => Promise<void> }) => {
