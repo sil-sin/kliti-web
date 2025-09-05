@@ -4,8 +4,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import sharp from 'sharp'
 
 export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }) {
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const { id } = await params
 
@@ -28,13 +29,15 @@ export async function GET(
     const metadata = await sharp(imageBuffer).metadata()
     const width = metadata.width || 800
     const height = metadata.height || 800
+
     // Simplify SVG watermark - make it smaller
-    const fontSize = Math.floor(width / 5) 
-    const watermark = Buffer.from(await getWatermarkSVG(
-      Math.min(width, 1000), 
+    const fontSize = Math.floor(width / 5)
+    const watermarkSvg = await getWatermarkSVG(
+      Math.min(width, 1000),
       Math.min(height, 1000),
       fontSize
-    ))
+    )
+    const watermark = Buffer.from(watermarkSvg)
 
     const outputBuffer = await sharp(imageBuffer)
       .composite([{
@@ -44,11 +47,11 @@ export async function GET(
       .jpeg({ quality: 70 }) // Optimize output
       .toBuffer()
 
-    return new NextResponse(Buffer.from(outputBuffer), {
+    return new NextResponse(outputBuffer, {
       status: 200,
       headers: {
         'Cache-Control': 'public, max-age=172800, stale-while-revalidate=7200',
-        'Content-Type': 'image/jpg',
+        'Content-Type': 'image/jpeg',
         'Content-Disposition': 'inline'
       }
     })
