@@ -19,6 +19,8 @@ import {
   User
 } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
+import { collection, addDoc, getFirestore } from 'firebase/firestore'
+import { app } from '@/lib/firebase'
 
 type AuthContextType = {
   user: User | null
@@ -102,6 +104,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await sendEmailVerification(userCredential.user)
       } catch (verificationError) {
         console.error('Failed to send email verification:', verificationError)
+      }
+
+      // Notify admin of new registration
+      try {
+        const db = getFirestore(app)
+        await addDoc(collection(db, 'sil-mail'), {
+          to: process.env.NEXT_PUBLIC_ADMIN,
+          message: {
+            subject: `New User Registration: ${name}`,
+            html: `New user has registered:\n\nName: ${name}\nEmail: ${email}\nUser ID: ${userCredential.user.uid}`
+          }
+        })
+      } catch (notificationError) {
+        console.error('Failed to notify admin:', notificationError)
       }
 
       return {

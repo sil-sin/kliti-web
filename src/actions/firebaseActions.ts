@@ -1,5 +1,5 @@
 'use server'
-import { collection, getDocs, getFirestore } from 'firebase/firestore/lite'
+import { collection, getDocs, getFirestore } from 'firebase/firestore'
 import { app } from '@/lib/firebase'
 
 export const fetchCollections = async () => {
