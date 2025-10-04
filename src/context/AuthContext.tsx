@@ -110,7 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const db = getFirestore(app)
         await addDoc(collection(db, 'sil-mail'), {
-          to: process.env.NEXT_PUBLIC_ADMIN,
+          to: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
           message: {
             subject: `New User Registration: ${name}`,
             html: `New user has registered:\n\nName: ${name}\nEmail: ${email}\nUser ID: ${userCredential.user.uid}`
