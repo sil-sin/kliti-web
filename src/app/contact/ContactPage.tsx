@@ -14,22 +14,21 @@ export default function ContactPage() {
             Contact Page
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Ready to capture your special moments? Get in touch with us to discuss your photography needs.
+            Ready to capture your special moments? Get in touch with us to
+            discuss your photography needs.
           </p>
         </div>
 
         {/* Contact Content */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 md:p-12">
-          
           {/* WhatsApp Section */}
           <WhatsAppSection />
-          
+
           {/* Divider */}
           <div className="my-12 border-t border-gray-200"></div>
-          
+
           {/* Contact Form */}
           <ContactForm />
-          
         </div>
       </div>
     </main>

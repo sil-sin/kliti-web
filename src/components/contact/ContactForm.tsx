@@ -50,17 +50,21 @@ export default function ContactForm() {
 
   const [errors, setErrors] = useState<FormErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [submitStatus, setSubmitStatus] = useState<
+    'idle' | 'success' | 'error'
+  >('idle')
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-    
+    setFormData((prev) => ({ ...prev, [name]: value }))
+
     // Clear error when user starts typing
     if (errors[name as keyof FormErrors]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }))
+      setErrors((prev) => ({ ...prev, [name]: undefined }))
     }
   }
 
@@ -91,7 +95,7 @@ export default function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) {
       return
     }
@@ -101,7 +105,7 @@ export default function ContactForm() {
 
     try {
       const result = await submitContactForm(formData)
-      
+
       if (result.success) {
         setSubmitStatus('success')
         // Reset form
@@ -138,7 +142,10 @@ export default function ContactForm() {
         {/* Name Fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-red-600 mb-2">
+            <label
+              htmlFor="firstName"
+              className="block text-sm font-medium text-red-600 mb-2"
+            >
               First name
             </label>
             <input
@@ -158,7 +165,10 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-red-600 mb-2">
+            <label
+              htmlFor="lastName"
+              className="block text-sm font-medium text-red-600 mb-2"
+            >
               Last name
             </label>
             <input
@@ -180,7 +190,10 @@ export default function ContactForm() {
 
         {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-red-600 mb-2">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-red-600 mb-2"
+          >
             Email
           </label>
           <input
@@ -202,7 +215,10 @@ export default function ContactForm() {
         {/* Phone */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-1">
-            <label htmlFor="phone" className="block text-sm font-medium text-red-600 mb-2">
+            <label
+              htmlFor="phone"
+              className="block text-sm font-medium text-red-600 mb-2"
+            >
               Phone
             </label>
             <select className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
@@ -212,9 +228,12 @@ export default function ContactForm() {
               <option>+49</option>
             </select>
           </div>
-          
+
           <div className="md:col-span-3">
-            <label htmlFor="phoneNumber" className="block text-sm font-medium text-transparent mb-2">
+            <label
+              htmlFor="phoneNumber"
+              className="block text-sm font-medium text-transparent mb-2"
+            >
               Phone Number
             </label>
             <input
@@ -231,7 +250,10 @@ export default function ContactForm() {
 
         {/* Event Type */}
         <div>
-          <label htmlFor="eventType" className="block text-sm font-medium text-red-600 mb-2">
+          <label
+            htmlFor="eventType"
+            className="block text-sm font-medium text-red-600 mb-2"
+          >
             Event type
           </label>
           <div className="relative">
@@ -285,7 +307,10 @@ export default function ContactForm() {
         {/* Date and Time */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="eventDate" className="block text-sm font-medium text-red-600 mb-2">
+            <label
+              htmlFor="eventDate"
+              className="block text-sm font-medium text-red-600 mb-2"
+            >
               Date
             </label>
             <div className="relative">
@@ -302,7 +327,10 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label htmlFor="eventTime" className="block text-sm font-medium text-red-600 mb-2">
+            <label
+              htmlFor="eventTime"
+              className="block text-sm font-medium text-red-600 mb-2"
+            >
               Time start - end
             </label>
             <div className="relative">
