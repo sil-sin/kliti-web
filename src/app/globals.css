@@ -25,8 +25,15 @@
     --background: #f8f7f2;
     --foreground: #333333;
     --font-cormorant: 'Cormorant', serif;
+    /* Button colors */
+    --primary: #1f2937;
+    --primary-dark: #111827;
+    --secondary: #f3f4f6;
+    --secondary-dark: #e5e7eb;
+    --secondary-light: #ffffff;
+    --neutral-300: #d1d5db;
+    --neutral-500: #6b7280;
 }
-
 
 body {
     background-color: var(--background);
