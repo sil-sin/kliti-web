@@ -33,7 +33,8 @@ type AuthContextType = {
   signup: (
     email: string,
     password: string,
-    name: string
+    name: string,
+    phone?: string
   ) => Promise<{
     uid?: string
     email?: string | null
@@ -84,7 +85,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     document.cookie = 'session=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT'
   }
 
-  const signup = async (email: string, password: string, name: string) => {
+  const signup = async (
+    email: string,
+    password: string,
+    name: string,
+    phone?: string
+  ) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -106,14 +112,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.error('Failed to send email verification:', verificationError)
       }
 
+      // Save user data to Firestore
+      try {
+        const db = getFirestore(app)
+        await addDoc(collection(db, 'users'), {
+          uid: userCredential.user.uid,
+          name: name,
+          displayName: name,
+          email: email,
+          phone: phone || '',
+          registrationDate: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          isLinked: false,
+          isPaid: false,
+          emailVerified: false,
+          isAdmin: false
+        })
+      } catch (firestoreError) {
+        console.error('Failed to save user data:', firestoreError)
+      }
+
       // Notify admin of new registration
       try {
         const db = getFirestore(app)
+        const adminEmail =
+          process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'silviberat@gmail.com'
+        const linkMediaUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/admin/link-media?userId=${userCredential.user.uid}`
+
         await addDoc(collection(db, 'sil-mail'), {
-          to: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+          to: adminEmail,
           message: {
             subject: `New User Registration: ${name}`,
-            html: `New user has registered:\n\nName: ${name}\nEmail: ${email}\nUser ID: ${userCredential.user.uid}`
+            html: `
+              <h2>New User Registered</h2>
+              <p><strong>Name:</strong> ${name}</p>
+              <p><strong>Email:</strong> ${email}</p>
+              <p><strong>User ID:</strong> ${userCredential.user.uid}</p>
+              <p><strong>Registration Date:</strong> ${new Date().toLocaleString()}</p>
+              <br>
+              <p><a href="${linkMediaUrl}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Link Media for this User</a></p>
+            `
           }
         })
       } catch (notificationError) {

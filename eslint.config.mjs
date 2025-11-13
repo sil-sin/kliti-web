@@ -1,3 +1,5 @@
+import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
+import nextTypescript from "eslint-config-next/typescript";
 import js from '@eslint/js'
 import importPlugin from 'eslint-plugin-import'
 import prettierPlugin from 'eslint-plugin-prettier'
@@ -5,8 +7,10 @@ import reactPlugin from 'eslint-plugin-react'
 import reactHooksPlugin from 'eslint-plugin-react-hooks'
 
 export default [
-  js.configs.recommended, // Equivalent to "eslint:recommended"
-
+  ...nextCoreWebVitals,
+  ...nextTypescript,
+  // Equivalent to "eslint:recommended"
+  js.configs.recommended,
   {
     plugins: {
       import: importPlugin,
@@ -40,4 +44,4 @@ export default [
 
     ignores: ['node_modules', 'dist'] // Ignore unnecessary folders
   }
-]
+];

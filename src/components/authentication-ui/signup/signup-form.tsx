@@ -1,23 +1,53 @@
 'use client'
-import { useEffect, useRef } from 'react'
-import { useSignUpForm } from '@/hooks/useSignUpForm'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/context/AuthContext'
+import { signupSchema, type SignupFormData } from '@/lib/validations/auth'
 import Button from '@/components/ui/button'
 
 export default function SignUpForm() {
-  const { formData, errors, serverError, loading, handleSubmit, handleChange } =
-    useSignUpForm()
+  const router = useRouter()
+  const { signup } = useAuth()
+  const [serverError, setServerError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
-  const emailInputRef = useRef<HTMLInputElement>(null)
-  const nameInputRef = useRef<HTMLInputElement>(null)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setFocus
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema)
+  })
 
   useEffect(() => {
-    emailInputRef.current?.scrollIntoView({ behavior: 'smooth' })
-    nameInputRef.current?.focus()
-  }, [])
+    setFocus('name')
+  }, [setFocus])
+
+  const onSubmit = async (data: SignupFormData) => {
+    setServerError(null)
+    setLoading(true)
+
+    const result = await signup(
+      data.email,
+      data.password,
+      data.name,
+      data.phone
+    )
+
+    if (result.success) {
+      router.push('/auth/profile')
+    } else {
+      setServerError(result.error || 'Sign up failed')
+      setLoading(false)
+    }
+  }
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       className="space-y-6 p-6 bg-white shadow-lg rounded-lg max-w-md mx-auto"
     >
       <h1 className="text-3xl font-semibold text-center">Sign Up</h1>
@@ -32,17 +62,14 @@ export default function SignUpForm() {
         <label className="block font-medium">Full Name</label>
         <input
           aria-label="full-name"
-          ref={nameInputRef}
           type="text"
-          name="fullName"
-          value={formData.fullName}
-          onChange={handleChange}
+          {...register('name')}
           className={`w-full p-3 border rounded-md  ${
-            errors.fullName ? 'border-red-500' : 'border-gray-300'
+            errors.name ? 'border-red-500' : 'border-gray-300'
           }`}
         />
-        {errors.fullName && (
-          <p className="text-sm text-red-500">{errors.fullName}</p>
+        {errors.name && (
+          <p className="text-sm text-red-500">{errors.name.message}</p>
         )}
       </div>
 
@@ -50,16 +77,31 @@ export default function SignUpForm() {
         <label className="block font-medium">Email</label>
         <input
           aria-label="email-input"
-          ref={emailInputRef}
           type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
+          {...register('email')}
           className={`w-full p-3 border rounded-md  ${
             errors.email ? 'border-red-500' : 'border-gray-300'
           }`}
         />
-        {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+        {errors.email && (
+          <p className="text-sm text-red-500">{errors.email.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <label className="block font-medium">Phone Number</label>
+        <input
+          aria-label="phone-input"
+          type="tel"
+          {...register('phone')}
+          placeholder="+1234567890"
+          className={`w-full p-3 border rounded-md  ${
+            errors.phone ? 'border-red-500' : 'border-gray-300'
+          }`}
+        />
+        {errors.phone && (
+          <p className="text-sm text-red-500">{errors.phone.message}</p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -67,15 +109,30 @@ export default function SignUpForm() {
         <input
           aria-label="password-input"
           type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
+          {...register('password')}
           className={`w-full p-3 border rounded-md  ${
             errors.password ? 'border-red-500' : 'border-gray-300'
           }`}
         />
         {errors.password && (
-          <p className="text-sm text-red-500">{errors.password}</p>
+          <p className="text-sm text-red-500">{errors.password.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <label className="block font-medium">Confirm Password</label>
+        <input
+          aria-label="confirm-password-input"
+          type="password"
+          {...register('confirmPassword')}
+          className={`w-full p-3 border rounded-md  ${
+            errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+          }`}
+        />
+        {errors.confirmPassword && (
+          <p className="text-sm text-red-500">
+            {errors.confirmPassword.message}
+          </p>
         )}
       </div>
 

@@ -32,12 +32,35 @@ const Navbar = () => {
     setMounted(true)
   }, [])
 
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  // Check if user is admin
+  useEffect(() => {
+    const checkAdmin = async () => {
+      if (user) {
+        try {
+          const token = await user.getIdTokenResult()
+          setIsAdmin(token.claims.admin === true)
+        } catch (error) {
+          console.error('Error checking admin status:', error)
+        }
+      } else {
+        setIsAdmin(false)
+      }
+    }
+    checkAdmin()
+  }, [user])
+
   const navLinks = [
     { name: 'Portfolio', page: '/portfolio' },
     { name: 'About', page: '/about' },
-    { name: 'Pricing', page: '/pricing' },
     { name: 'Contact', page: '/contact' }
   ]
+
+  // Add admin dashboard link for admin users
+  const adminNavLinks = isAdmin
+    ? [{ name: 'Dashboard', page: '/admin/dashboard' }, ...navLinks]
+    : navLinks
 
   const handleLinkClick = () => {
     setIsMenuOpen(false)
@@ -63,7 +86,7 @@ const Navbar = () => {
                   : 'hidden' // Mobile toggle
               )}
             >
-              {navLinks.map(({ name, page }) => (
+              {adminNavLinks.map(({ name, page }) => (
                 <Link
                   key={page}
                   href={page}

@@ -1,21 +1,49 @@
 'use client'
-import { useEffect, useRef } from 'react'
-import { useLoginForm } from '@/hooks/useLoginForm'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/context/AuthContext'
+import { loginSchema, type LoginFormData } from '@/lib/validations/auth'
 import Button from '@/components/ui/button'
+import { useState } from 'react'
 
 export default function LoginForm() {
-  const { formData, errors, serverError, loading, handleSubmit, handleChange } =
-    useLoginForm()
-  const emailInputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter()
+  const { login } = useAuth()
+  const [serverError, setServerError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setFocus
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema)
+  })
 
   useEffect(() => {
-    emailInputRef.current?.scrollIntoView({ behavior: 'smooth' })
-    emailInputRef.current?.focus()
-  }, [])
+    setFocus('email')
+  }, [setFocus])
+
+  const onSubmit = async (data: LoginFormData) => {
+    setServerError(null)
+    setLoading(true)
+
+    const result = await login(data.email, data.password)
+
+    if (result.success) {
+      router.push('/auth/profile')
+    } else {
+      setServerError(result.error || 'Login failed')
+      setLoading(false)
+    }
+  }
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       className="space-y-6 p-6 bg-white shadow-lg rounded-lg max-w-md mx-auto"
     >
       <h1 className="text-3xl font-semibold text-center">Log In</h1>
@@ -30,16 +58,15 @@ export default function LoginForm() {
         <label className="block font-medium">Email</label>
         <input
           aria-label="email-input"
-          ref={emailInputRef}
           type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
+          {...register('email')}
           className={`w-full p-3 border rounded-md ${
             errors.email ? 'border-red-500' : 'border-gray-300'
           }`}
         />
-        {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+        {errors.email && (
+          <p className="text-sm text-red-500">{errors.email.message}</p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -47,15 +74,13 @@ export default function LoginForm() {
         <input
           aria-label="password-input"
           type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
+          {...register('password')}
           className={`w-full p-3 border rounded-md  ${
             errors.password ? 'border-red-500' : 'border-gray-300'
           }`}
         />
         {errors.password && (
-          <p className="text-sm text-red-500">{errors.password}</p>
+          <p className="text-sm text-red-500">{errors.password.message}</p>
         )}
       </div>
 
